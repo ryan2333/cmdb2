@@ -1,0 +1,28 @@
+<form action="/user/add/" method="POST">
+  <div class="form-group">
+    <label for="add-user-name" class="control-label">用户名:</label>
+    <input type="text" class="form-control" id="add-user-name" name="username">
+    <div class="alert alert-danger" role="alert" id="add-user-username-info" style="display:none"></div>
+  </div>
+  <div class="form-group">
+    <label for="add-user-passwd" class="control-label">密码:</label>
+    <input type="password" class="form-control" id="add-user-passwd" name="password">
+  </div>
+  <div class="form-group">
+    <label for="add-user-passwd-rep" class="control-label">重复密码:</label>
+    <input type="password" class="form-control" id="add-user-passwd-rep" name="passwordrep">
+    <div class="alert alert-danger" role="alert" id="add-user-passwd-info" style="display:none"></div>
+  </div>
+  <div class="form-group">
+    <label for="add-user-email" class="control-label">邮箱:</label>
+    <input type="text" class="form-control" id="add-user-email" name="email">
+  </div>
+  <div class="form-group">
+    <label class="control-label">用户类型:</label>
+      <select id="add-user-usertype" name="usertype">
+       {% for k,v in userType %}
+       <option value="{{k}}">{{v}}</option>
+       {% endfor %}
+      </select>    
+  </div>
+</form>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{{ url_for('static', filename='bootstrap-3.3.5-dist/css/bootstrap.min.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='t1.css') }}" rel="stylesheet"/>
+    {% block link %}{% endblock %}
+    {% block style %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">CMDB</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>欢迎{{ session.get('user', {}).get('username', '') }}</a></li>
+                    <li><a href="/logout/">退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">资产管理
+                    <li class="{% block nav_vm %}{% endblock %}">
+                        <a href="/users/">虚拟机管理</a>
+                    </li>
+                    <li class="{% block nav_phsics %}{% endblock %}">
+                        <a href="/logs/">物理主机管理</a>
+                    </li>
+                    <li class="{% block nav_users %}{% endblock %}">
+                        <a href="/assets/">用户管理</a>
+                    </li>
+                    <li class="{% block nav_idcs %}{% endblock %}">
+                        <a href="/assets/">机房管理</a>
+                    </li>
+                </ul>
+                <ul class="nav nav-sidebar">配置管理
+                    <li class="{% block nav_usertype %}{% endblock %}">
+                        <a href="/user_types/">用户类型管理</a>
+                    </li>
+                    <li class="{% block nav_oses %}{% endblock %}">
+                        <a href="/oses/">操作系统管理</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            {% block main %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% block dialog %}{% endblock %}
+    <div class="modal fade" id="dialog" tabindex="-1" role="dialog" aria-labelledby="diaglog-title">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="dialog-title"></h4>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" id="dialog-btn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery-2.2.4.min.js') }}"></script>
+    <script type="text/javascript"
+        src="{{ url_for('static', filename='bootstrap-3.3.5-dist/js/bootstrap.min.js') }}"></script>
+    {% block script %}{% endblock %}
+    {% block js %}{% endblock %}
+</body>
+</html>
