@@ -1,0 +1,107 @@
+<form action="/assets_vm/add/" id="createForm">
+  <div class="form-group">
+    <label for="add-assets-sn" class="control-label">VM ID:</label>
+    <input type="text" class="form-control" id="add-assets-sn" name="vmid" value="">
+    <div class="alert alert-danger" role="alert" id="add-assets-sn-info" style="display:none"></div>
+  </div>
+  
+  <div class="form-group">
+    <label for="add-assets-pip" class="control-label">VM IP:</label>
+    <input type="text" class="form-control" id="add-assets-pip" name="vmip" value="">
+  </div>
+  <div class="form-group">
+    <label for="add-assets-vendor" class="control-label">应用:</label>
+    <input type="text" class="form-control" id="add-assets-vendor" name="application" value="">
+  </div>
+  <div class="form-group">
+    <label for="add-assets-os" class="control-label">操作系统:</label>
+    <select name="os">
+      {% for os in oses %}
+      <option value="{{os['id']}}">{{os['osname']}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="add-assets-cpu" class="control-label">cpu核数(核)：</label>
+    <input class="form-control" id="add-assets-cpu" name="cpuThread" data-slider-id='ex2Slider' type="text" data-slider-min="2" data-slider-max="24" data-slider-step="2" data-slider-value="4" /><br>
+    当前所选cpu为：<span id="add-assets-cpuVal">4核</span>
+  </div>
+  <div class="form-group">
+    <label for="add-assets-mem" class="control-label">内存大小(G)：</label>
+    <input class="form-control" id="add-assets-mem" name="mem" data-slider-id='ex2Slider' type="text" data-slider-min="4" data-slider-max="32" data-slider-step="4" data-slider-value="8" /><br>
+    当前所选内存为：<span id="add-assets-memVal">8G</span>
+  </div>
+  <div class="form-group">
+    <label for="add-assets-disk" class="control-label">内存大小(G)：</label>
+    <input class="form-control" id="add-assets-disk" name="disk" data-slider-id='ex2Slider' type="text" data-slider-min="80" data-slider-max="2000" data-slider-step="20" data-slider-value="100" /><br>
+    当前所选硬盘为：<span id="add-assets-diskVal">100G</span>
+  </div>
+  <div class="form-group">
+    <label for="add-assets-bHost" class="control-label">物理主机:</label>
+    <select name="bHost">
+      {% for host in physics_hosts %}
+      <option value="{{host['id']}}">{{host['pip']}}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+</form>
+<script type="text/javascript" >
+
+   jQuery('#add-assets-cpu').slider();
+   jQuery('#add-assets-cpu').on('slide', function(slideEvt){
+      jQuery('#add-assets-cpuVal').text(slideEvt.value + '核')
+   })
+
+   jQuery('#add-assets-mem').slider();
+   jQuery('#add-assets-mem').on('slide', function(slideEvt){
+      jQuery('#add-assets-memVal').text(slideEvt.value + 'G')
+   })
+
+   jQuery('#add-assets-disk').slider();
+   jQuery('#add-assets-disk').on('slide', function(slideEvt){
+      jQuery('#add-assets-diskVal').text(slideEvt.value + 'G')
+   })
+    jQuery('#add-assets-purchase_date').datetimepicker({
+        language: 'zh-CN',
+        format: 'yyyy-mm-dd',
+        minView: 2,
+        autoclose: true
+    });
+    jQuery('#createForm').bootstrapValidator({
+      message: 'This value is not valid',
+            feedbackIcons: {/*输入框不同状态，显示图片的样式*/
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+      fields:{/*验证*/
+        sn:{/*键名sn和input name值对应*/
+          message: 'The sn number is not valid',
+          validators:{
+            notEmpty:{/*非空提示*/
+              message: 'SN号不能为空'
+            },
+            stringLength:{/*长度提示*/
+              min: 10,
+              max: 10,
+              message:'sn号长度是10个字符'
+            }
+          }
+        },
+        pip:{
+          message: 'The ip address is not valid',
+          validators:{
+            notEmpty:{/*非空提示*/
+              message: 'IP地址不能为空'
+            },
+            regexp:{
+              regexp:/^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/,
+              message:'ip地址不正确'
+            }
+          }
+        }
+      }
+    })
+</script> 
+

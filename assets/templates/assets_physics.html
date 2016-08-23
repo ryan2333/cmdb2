@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% block title %}主机管理{% endblock %}
+{% block nav_physics %}active{% endblock %}
+{% block link %}
+<link href="/static/sweetalert-1.1.1/dist/sweetalert.css" rel="stylesheet"/>
+<link href="/static/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet"/>
+<link href="/static/bootstrap-time-sider/css/bootstrap-slider.min.css" rel="stylesheet"/>
+<link href="/static/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
+<link href="/static/bootstrapvalidator-0.4.5/dist/css/bootstrapValidator.css"/>
+{% endblock %}
+{% block style %}{% endblock %}
+{% block main %}
+<h2 class="bg-success">{{msg}}</h2>
+{% for msg in get_flashed_messages() %}
+	<div align="center"><h3 style="color: red">{{ msg }}</h3></div>
+{% endfor %}
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialog" data-title='添加主机' data-btn="添加" data-url="/assets_physics/create/">添加主机</button>
+<a type="button" class="btn btn-primary" href='/assets_physics/download/'>导出资产</a>
+<br/><br/>
+<form class="form-inline" action="/up_physics/" method="post" enctype="multipart/form-data">
+  <div class="col-md-4">
+    <div class="input-group">
+      <input type="file" name="physicsFile" class="form-control" >
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">导入csv文件</button>
+      </span>
+    </div>
+  </div>
+</form>
+<br/><br/>
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>SN编号</th>
+            <th>主机IP</th>
+            <th>型号</th>
+            <th>esxi版本</th>
+            <th>cpu型号</th>
+            <th>内存</th>
+            <th>厂商</th>
+            <th>所在机房</th>
+            <th>机柜位置</th>
+            <th>主机位置</th>
+            <th>采购日期</th>
+            <th>保修年限</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for asset in assets %}
+        <tr>
+            <td>{{asset['sn']}}</td>
+            <td>{{asset['pip']}}</td>
+            <td>{{asset['model']}}</td>
+            <td>{{asset['esxi_version']}}</td>
+            <td>{{asset['cpuModel']}}</td>
+            <td>{{asset['pmem']}}</td>
+            <td>{{asset['vendor']}}</td>
+            <td>{{asset['bIdc']}}</td>
+            <td>{{asset['bPod']}}</td>
+            <td>{{asset['bPu']}}</td>
+            <td>{{asset['PurchaseDate']}}</td>
+            <td>{{asset['warranty']}}</td>
+            <td>
+                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#dialog" data-title="资产信息修改" data-btn="更新" data-url="/assets_physics/modify/?sn={{asset['sn']}}">编辑</button>
+                <button type="button" class="btn btn-xs btn-danger btn-delete" data-toggle="modal"  data-url="/assets_physics/delete/?sn={{asset['sn']}}" data-text="{{asset['sn']}}">删除</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+{% block dialog %}{% endblock %}
+{% block script %}
+<script type="text/javascript" src="/static/sweetalert-1.1.1/dist/sweetalert.min.js"></script>
+<script type="text/javascript" src="/static/DataTables-1.10.12/media/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/DataTables-1.10.12/media/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/bootstrap-time-sider/js/bootstrap-slider.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/static/bootstrapvalidator-0.4.5/dist/js/bootstrapValidator.js""></script>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('#dialog').on('show.bs.modal', function(event){
+          var that = this;
+          var button = jQuery(event.relatedTarget);
+          jQuery(that).find('.modal-title').html(button.data('title'));
+          jQuery(that).find('#dialog-btn').html(button.data('btn'));
+          console.log(button.data('url'))
+          jQuery('#dialog').find('.modal-body').load(button.data('url'));
+        });
+        jQuery('#dialog-btn').on('click', function(){
+            var dialog = jQuery('#dialog');
+            var form = jQuery(dialog).find('form');
+            console.log('aaaaa')
+            jQuery.post(form.attr('action'),
+                jQuery(form).serializeArray(),
+                function(data){
+                    if(data['is_ok']){
+                        if (data['success']){
+                            var text = data['success'];
+                            swal({
+                                title: text,
+                                text: "",
+                                type: "success",
+                                showCancelButton: false,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "确定",
+                                cancelButtonText: "",
+                                closeOnConfirm: true,
+                                closeOnCancel: false
+                            },
+                            function(isConfirm){
+                                if(isConfirm){
+                                    jQuery('#dialog').modal('hide');
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    }else{
+                        var text = data['error'];
+                        swal({
+                                title: text,
+                                text: "",
+                                type: "error",
+                                showCancelButton: false,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "确定",
+                                cancelButtonText: "",
+                                closeOnConfirm: true,
+                                closeOnCancel: false
+                            },
+                            function(isConfirm){
+                                if(isConfirm){
+                                }
+                            });
+                    }
+                },
+                'json'
+                );
+        });
+        jQuery('.btn-delete').on('click',function () {
+           var that = this,
+                   text = jQuery(that).data('text'),
+                   url = jQuery(that).data('url');
+            swal({
+               title: "确定删除主机" + text,
+                  text: "",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#DD6B55",
+                  confirmButtonText: "确定",
+                  cancelButtonText: "关闭",
+                  closeOnConfirm: true,
+                  closeOnCancel: true
+            },
+            function(isConfirm) {
+                if (isConfirm){
+                    window.location.replace(url);
+                }
+            }
+            );
+        });
+        jQuery('table').DataTable({
+            language: {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            }
+        });
+    })	
+</script>
+{% endblock %}

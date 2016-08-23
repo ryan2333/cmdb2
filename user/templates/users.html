@@ -30,7 +30,7 @@
             <td>{{user['email']}}</td>
             <td>{{user['user_type']}}</td>
             <td>
-                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#dialog" data-userid="{{user['uid']}}" data-username="{{user['username']}}">修改密码</button>
+                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#dialog" data-title="修改密码" data-url="/user/change_password/?uid={{user['uid']}}&username={{user['username']}}" data-btn="提交" data-text="{{user['username']}}">修改密码</button>
                 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#dialog" data-title="用户信息修改" data-btn="更新" data-url="/user/modify/?uid={{user['uid']}}">编辑</button>
                 <button type="button" class="btn btn-xs btn-danger btn-delete" data-toggle="modal"  data-url="/user/delete/?uid={{user['uid']}}&username={{user['username']}}" data-text="{{user['username']}}">删除</button>
             </td>

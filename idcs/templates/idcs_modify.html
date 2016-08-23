@@ -1,0 +1,73 @@
+<form action="/idcs/update/" id="updateForm">
+  <input type="hidden" id="idc-id" name="id" value="{{idcs['id']}}">
+  <div class="form-group">
+    <label for="idcname" class="control-label">idc名称:</label>
+    <input type="text" class="form-control" id="idcname" name="idcname" readonly="readonly" value="{{idcs['idcName']}}">
+    <div class="alert alert-danger" role="alert" id="add-assets-sn-info" style="display:none"></div>
+  </div>
+  
+  <div class="form-group">
+    <label for="idcpods" class="control-label">租用机柜(多个不连续的以","分隔,连续的以-分隔):</label>
+    <input type="text" class="form-control" id="idcpods" name="idcpods" value="{{idcs['pods']}}">
+  </div>
+  <div class="form-group">
+    <label for="bandwidth" class="control-label">带宽：</label>
+    <input class="form-control" id="bandwidth" name="bandwidth" data-slider-id='ex2Slider' type="text" data-slider-min="10" data-slider-max="100" data-slider-step="10" data-slider-value="{{idcs['bandwidth']}}" /><br>
+    当前所选带宽为：<span id="bandwidthVal">{{idcs['bandwidth']}}M</span>
+  </div>
+  <div class="form-group">
+    <label for="t-contact" class="control-label">技术联系人:</label>
+    <input type="text" class="form-control" id="t-contact" name="t-contact" value="{{idcs['t_contact']}}">
+  </div>
+  <div class="form-group">
+    <label for="t-phone" class="col-md-3 control-label">技术电话:</label>
+    <input type="text" class="form-control" id="t-phone" name="t-phone" value="{{idcs['t_phone']}}">
+  </div>
+   <div class="form-group">
+    <label for="kf-contact" class="control-label">客服联系人:</label>
+    <input type="text" class="form-control" id="kf-contact" name="kf-contact" value="{{idcs['kf_contact']}}">
+  </div> 
+  <div class="form-group">
+    <label for="kf-phone" class="control-label">客服电话:</label>
+    <input type="text" class="form-control" id="kf-phone" name="kf-phone" value="{{idcs['kf_phone']}}">
+  </div>
+   <div class="form-group">
+    <label for="startdate" class="control-label">租用日期:</label>
+    <input type="text" class="form-control" id="startdate" name="startdate" value="{{idcs['start_date']}}">
+  </div>
+  <div class="form-group">
+    <label for="address" class="control-label">机房地址:</label>
+    <input type="text" class="form-control" id="address" name="address" value="{{idcs['address']}}">
+  </div>
+</form>
+<script type="text/javascript" >
+   jQuery('#bandwidth').slider();
+   jQuery('#bandwidth').on('slide', function(slideEvt){
+      jQuery('#bandwidthVal').text(slideEvt.value + 'M')
+   })
+    jQuery('#startdate').datetimepicker({
+        language: 'zh-CN',
+        format: 'yyyy-mm-dd',
+        minView: 2,
+        autoclose: true
+    });
+    jQuery('#updateForm').bootstrapValidator({
+      message: 'This value is not valid',
+            feedbackIcons: {/*输入框不同状态，显示图片的样式*/
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+      fields:{/*验证*/
+        idcname:{/*键名sn和input name值对应*/
+          message: 'The sn number is not valid',
+          validators:{
+            notEmpty:{/*非空提示*/
+              message: 'SN号不能为空'
+            }
+          }
+        }
+      }
+    })
+</script> 
+

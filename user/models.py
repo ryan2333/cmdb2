@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from dbutil import MySQLConnection
+from encry import md5_str
 
 class UserType(object):
 	@classmethod
@@ -20,8 +21,8 @@ class User(object):
 
 	@classmethod
 	def validate_login(cls, username, password):
-		_columns = ('uid', 'username')
-		_sql = 'select uid, username from users where username=%s and password=md5(%s)'
+		_columns = ('uid', 'username', 'user_type')
+		_sql = 'select uid, username, user_type from users where username=%s and password=md5(%s)'
 		_count, _rt_list = MySQLConnection.execute_sql(_sql, (username, password))
 		return dict(zip(_columns, _rt_list[0])) if _count != 0 else None
 
@@ -93,3 +94,15 @@ class User(object):
 			return True, ''
 		else:
 			return False, ''
+
+
+	@classmethod
+	def up_password(cls,uid,username, newpassword):
+		_sql = 'update users set password=md5(%s) where uid=%s and username=%s'
+		args = (newpassword, uid, username)
+		_count, _rt_list = MySQLConnection.execute_sql(_sql, args, False)
+		if _count:
+			return True, ''
+		else:
+			return False
+		

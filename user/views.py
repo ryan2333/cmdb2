@@ -30,7 +30,6 @@ def index():
 
 def userType():
     user_type=UserType.get_user_types()
-    print user_type
     return user_type
 
 
@@ -112,6 +111,42 @@ def user_delete():
     else:
         flash('用户删除失败')
         return redirect('/users/')
+
+
+@login_required
+@app.route('/user/change_password/')
+def user_changePassword():
+    uid = request.args.get('uid', '')
+    username = request.args.get('username', '')
+    if session['user']['uid'] == int(uid) and session['user']['username'] == username:
+        return render_template('user_changepassword.html',uid=uid, username=username)
+    elif session['user']['user_type'] == 1:
+        return render_template('user_changepassword.html',uid=uid, username=username)
+    else:
+        return '权限不足，请联系管理员！！'
+
+
+@login_required
+@app.route('/user/update_password/', methods=['post'])
+def up_pass():
+    uid = request.form.get('uid', '')
+    username = request.form.get('username', '')
+    oldpassword = request.form.get('oldpassword', '')
+    newpassword = request.form.get('newpassword', '')
+    reppassword = request.form.get('reppassword', '')
+    if session['user']['user_type'] == 1 and newpassword == reppassword:
+        is_ok, error = User.up_password(uid,username, newpassword)
+    elif session['user']['username'] == username and session['user']['uid'] == int(uid):
+        _user = User.validate_login(username, oldpassword)
+        if _user and newpassword == reppassword:
+            is_ok, error = User.up_password(uid,username, newpassword)
+        else:
+            return json.dumps({'is_ok':False,'error':'旧密码不正确 or 两次输入密码不匹配'})
+    else:
+        return json.dumps({'is_ok':False, 'error':'提交信息有误'})
+
+    if is_ok:
+        return json.dumps({'is_ok':True, 'success':'用户密码修改成功'})
 
 
 @login_required
