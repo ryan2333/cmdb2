@@ -1,4 +1,5 @@
 <form action="/assets_vm/update/" id="updateForm">
+  <input type="hidden" id="modify-user-uid" name="vid" value="{{assets['vid']}}">
   <div class="form-group">
     <label for="vmid" class="control-label">VM ID:</label>
     <input type="text" class="form-control" id="vmid" name="vmid" readonly="readonly" value="{{assets['vmid']}}">

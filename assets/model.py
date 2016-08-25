@@ -62,10 +62,6 @@ class Assets_vms(object):
 	def validate_vms_add(cls,vmid,vmip,os,cpuThread,mem,disk,bHost):
 		error = []
 		rt = True
-		_rt_list = cls.get_by_vmid('vmid',vmid)
-		if _rt_list:
-			rt = False
-			error.append('vmid已存在')
 		if not vmid:
 			rt = False
 			error.append('vmid不能为空')
@@ -93,7 +89,7 @@ class Assets_vms(object):
 		return rt, error
 
 	@classmethod
-	def validate_vms_update(cls,vmid,vmip,os,cpuThread,mem,disk,bHost):
+	def validate_vms_update(cls,vmid,vmip,os,cpuThread,mem,disk,bHost,vid):
 		error = []
 		rt = True
 		vmip = vmip.strip()
@@ -107,9 +103,8 @@ class Assets_vms(object):
 		elif len(vmip.split('.')) != 4:
 			rt = False
 			error.append('IP地址不正确')
-		if cls.get_by_vmid('vmip',vmip) != None and cls.get_by_vmid('vmip',vmip)['vmid'] != vmid:
+		if cls.get_by_vmid('vid',vid) != None and cls.get_by_vmid('vmip',vmip)['vid'] != int(vid):
 			rt = False
-			print rt
 			error.append('IP地址已存在')			
 		if not os or not cpuThread or not mem or not disk or not bHost:
 			rt = False
@@ -132,9 +127,9 @@ class Assets_vms(object):
 
 
 	@classmethod
-	def assets_vm_update(cls,vmid,application,vmip,os,cpuThread,mem,disk,bHost):
-		_sql = 'update vms set vmip=%s,application=%s,os=%s,cpuThread=%s,mem=%s,disk=%s,bHost=%s where vmid=%s and status=0'
-		args = (vmip,application,os,cpuThread,mem,disk,bHost,vmid)
+	def assets_vm_update(cls,vmid,application,vmip,os,cpuThread,mem,disk,bHost,vid):
+		_sql = 'update vms set vmip=%s,application=%s,os=%s,cpuThread=%s,mem=%s,disk=%s,bHost=%s where vid=%s and status=0'
+		args = (vmip,application,os,cpuThread,mem,disk,bHost,vid)
 		_count, _rt_list = MySQLConnection.execute_sql(_sql, args, False)
 		if _count:
 			return True, ''
@@ -142,9 +137,9 @@ class Assets_vms(object):
 			return False, ''
 
 	@classmethod
-	def assets_vm_delete(cls,vmid):
-		_sql = 'update vms set status=1 where vmid=%s'
-		args = (vmid,)
+	def assets_vm_delete(cls,vid):
+		_sql = 'update vms set status=1 where vid=%s'
+		args = (vid,)
 		_count, _rt_list = MySQLConnection.execute_sql(_sql, args)
 		if _count:
 			return True, ''
@@ -353,7 +348,6 @@ class Assets_import(object):
 		reader = csv.reader(csvFile)
 		rowlists = []
 		for line in reader:
-			print line
 			rowlists.append(line)
 		csvFile.close()
 

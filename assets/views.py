@@ -50,16 +50,17 @@ def assets_vm_add():
 
 @assets.route('/assets_vm/modify/')
 def assets_vm_modify():
-	vmid = request.args.get('vmid')
+	vid = request.args.get('vid')
 	_oses = Assets_physics.get_os_list()
 	_physics_hosts = Assets_vms.get_host_list()
-	_assets = Assets_vms.get_by_vmid('vmid', vmid)
+	_assets = Assets_vms.get_by_vmid('vid', vid)
 	return render_template('assets_vm_modify.html', oses=_oses, physics_hosts=_physics_hosts, assets=_assets)
 
 
 @assets.route('/assets_vm/update/',methods=['post'])
 def assets_vm_update():
 	params = request.form
+	vid = params.get('vid','')
 	vmid = params.get('vmid','')
 	application = params.get('application','') 
 	vmip = params.get('vmip','') 
@@ -68,9 +69,9 @@ def assets_vm_update():
 	mem = params.get('mem',4)
 	disk = params.get('disk',100)
 	bHost = params.get('bHost','')
-	_is_ok, error = Assets_vms.validate_vms_update(vmid,vmip,os,cpuThread,mem,disk,bHost)
+	_is_ok, error = Assets_vms.validate_vms_update(vmid,vmip,os,cpuThread,mem,disk,bHost,vid)
 	if _is_ok:
-		_is_ok,error = Assets_vms.assets_vm_update(vmid,application,vmip,os,cpuThread,mem,disk,bHost)
+		_is_ok,error = Assets_vms.assets_vm_update(vmid,application,vmip,os,cpuThread,mem,disk,bHost,vid)
 		return json.dumps({'is_ok':_is_ok, 'success':'虚拟机信息更新成功'})
 	else:
 		return json.dumps({'is_ok':_is_ok, 'error':'\n'.join(error)})
@@ -79,8 +80,8 @@ def assets_vm_update():
 
 @assets.route('/assets_vm/delete/')
 def assets_vm_delete():
-	vmid = request.args.get('vmid')
-	_is_ok, error = Assets_vms.assets_vm_delete(vmid)
+	vid = request.args.get('vid')
+	_is_ok, error = Assets_vms.assets_vm_delete(vid)
 	if _is_ok:
 	    flash('虚拟机删除成功')
 	    return redirect('/assets_vm/')
