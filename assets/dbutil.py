@@ -72,7 +72,21 @@ class MySQLConnection(object):
         return _count, _rt_list
 
     @classmethod
-    def bulker_execute_sql(cls, sql, args_list=[]):
+    def bulker_execute_sql_vms(cls, sql, args_list=[]):
+        _count = 0
+        _rt_list = []
+        _conn = MySQLConnection(host=gconf.DBHOST, port=gconf.DBPORT, \
+                            user=gconf.DBUSER, passwd=gconf.DBPASSWD, \
+                            db=gconf.DBNAME, charset=gconf.DB_CHARSET)
+        for _args in args_list:
+            args = (_args[0],_args[1],_args[2],_args[3],int(_args[4])/1024,int(_args[5])/1024)
+            _count += _conn.execute(sql, args)
+        _conn.close()
+        return _count, _rt_list
+
+
+    @classmethod
+    def bulker_execute_sql_physics(cls, sql, args_list=[]):
         _count = 0
         _rt_list = []
         _conn = MySQLConnection(host=gconf.DBHOST, port=gconf.DBPORT, \
@@ -82,6 +96,7 @@ class MySQLConnection(object):
             _count += _conn.execute(sql, _args)
         _conn.close()
         return _count, _rt_list
+
 
 if __name__ == '__main__':
     print MySQLConnection.execute_sql('select * from user')

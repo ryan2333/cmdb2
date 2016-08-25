@@ -169,7 +169,7 @@ class Assets_physics(object):
 
 	@classmethod
 	def get_idcs_list(cls):
-		_column = 'id,idcName,pods,bandwidth,t_contact,t_phone,kf_contact,kf_phone,start_date,end_date,address'
+		_column = 'id,idcName,pods,bandwidth,t_contact,t_phone,kf_contact,kf_phone,start_date,address'
 		_columns = _column.split(',')
 		_sql = 'select {columns} from idcs where status=0'.format(columns=_column)
 		args = ()
@@ -341,7 +341,7 @@ class Assets_import(object):
 		_columns = ','.join(rowlists[0][:-1])
 		_datelists = rowlists[1:-1]
 		_sql = 'insert into vms({columns}) values(%s,%s,%s,%s,%s,%s)'.format(columns=_columns)
-		_count, _rt_list = MySQLConnection.bulker_execute_sql(_sql,_datelists)
+		_count, _rt_list = MySQLConnection.bulker_execute_sql_vms(_sql,_datelists)
 		if _count:
 			return True, ''
 		else:
@@ -353,13 +353,14 @@ class Assets_import(object):
 		reader = csv.reader(csvFile)
 		rowlists = []
 		for line in reader:
+			print line
 			rowlists.append(line)
 		csvFile.close()
 
 		_columns = ','.join(rowlists[0])
 		_datelists = rowlists[1:]
 		_sql = 'insert into physics_host({columns}) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)'.format(columns=_columns)
-		_count, _rt_list = MySQLConnection.bulker_execute_sql(_sql,_datelists)
+		_count, _rt_list = MySQLConnection.bulker_execute_sql_physics(_sql,_datelists)
 		if _count:
 			return True, ''
 		else:
