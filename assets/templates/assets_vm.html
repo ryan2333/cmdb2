@@ -50,6 +50,7 @@
             <td>{{asset['bHost']}}</td>
             <td>
                 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#dialog" data-title="虚拟机信息修改" data-btn="更新" data-url="/assets_vm/modify/?vid={{asset['vid']}}">编辑</button>
+                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#dialog" data-title="执行命令" data-btn="执行" data-url="/assets_vm/run_cmd/?vid={{asset['vmip']}}">执行命令</button>
                 <button type="button" class="btn btn-xs btn-danger btn-delete" data-toggle="modal"  data-url="/assets_vm/delete/?vid={{asset['vid']}}">删除</button>
             </td>
         </tr>

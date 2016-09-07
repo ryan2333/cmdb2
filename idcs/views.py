@@ -100,12 +100,13 @@ def oses_add():
 @idcs.route('/oses/delete/')
 def oses_delete():
 	_id = request.args.get('id','')
-	_is_ok,error = Oses.oses_delete(_id)
+	_is_ok,error = Oses.oses_delete_check(_id)
 	if _is_ok:
+		Oses.oses_delete(_id)
 		flash('系统删除成功')
 		return redirect('/oses/')
 	else:
-		flash('系统删除失败')
+		flash(error)
 		return redirect('/oses/')
 
 @idcs.route('/user_types/')

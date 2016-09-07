@@ -38,7 +38,7 @@ class Assets_vms(object):
 	@classmethod
 	def get_vm_list(cls):
 		_column = 'vid,vmid,application,vmip,os,cpuThread,mem,disk,bHost'
-		_sql = 'select vms.vid,vms.vmid,vms.application,vms.vmip,oses.osname as os,vms.cpuThread,vms.mem,vms.disk,physics_host.pip as bHost from vms inner join physics_host on vms.bHost=physics_host.pid inner join oses on vms.os=oses.id  where physics_host.status=0'
+		_sql = 'select vms.vid,vms.vmid,vms.application,vms.vmip,oses.osname as os,vms.cpuThread,vms.mem,vms.disk,physics_host.pip as bHost from vms inner join physics_host on vms.bHost=physics_host.pid inner join oses on vms.os=oses.id  where physics_host.status=0 and vms.status=0'
 		args = ()
 		result = []
 		_columns = _column.split(',')

@@ -202,6 +202,18 @@ class Oses(object):
 		else:
 			return False, ''
 
+	@classmethod
+	def oses_delete_check(cls,_id):
+		_sql1 = 'select * from vms where os=%s'
+		_sql2 = 'select * from physics_host where esxi_version=%s'
+		args = (_id,)
+		_count_vms, _rt_list_vms = MySQLConnection.execute_sql(_sql1,args)
+		_count_host, _rt_list_host = MySQLConnection.execute_sql(_sql2, args)
+
+		if _count_vms or _count_host:
+			return False, '存在设备使用此系统，请修改后重试'
+		else:
+			return True, ''
 
 	@classmethod	
 	def oses_delete(cls,_id):
